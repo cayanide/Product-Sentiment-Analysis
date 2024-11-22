@@ -30,3 +30,4 @@ jobs:
         run: |
           docker build -t ghcr.io/${{ github.repository }}/product-sentiment-analysis:v1 .
           docker push ghcr.io/${{ github.repository }}/product-sentiment-analysis:v1
+
