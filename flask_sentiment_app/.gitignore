@@ -1,0 +1,6 @@
+# Ignore large data files
+*.csv
+*.pkl
+*.zip
+__pycache__/
+
