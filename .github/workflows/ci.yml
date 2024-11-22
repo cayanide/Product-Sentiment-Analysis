@@ -1,40 +1,32 @@
-name: Build and Publish Multi-Arch Docker Image
+name: Build and Publish Docker Image
 
 on:
   push:
     branches:
-      - main # Trigger the workflow on push to the main branch
+      - main # Trigger on push to the main branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        platforms: [linux/amd64, linux/arm64] # Define the target platforms for the multi-arch image
-
     steps:
-      # Checkout the code
+      # Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up Docker Buildx (for multi-architecture builds)
+      # Set up Docker Buildx (advanced features for building multi-platform Docker images)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      # Log in to GitHub Container Registry
+      # Log in to GitHub Container Registry (GHCR) using a GitHub token
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          username: ${{ github.actor }} # Use the GitHub username
-          password: ${{ secrets.GH_TOKEN }} # Ensure the GH_TOKEN is set as a secret in your repo
+          username: ${{ github.actor }} # This automatically gets the GitHub username
+          password: ${{ secrets.GH_TOKEN }} # GH_TOKEN should be a repository secret
 
-      # Build and push the Docker image to GHCR with multi-platform support
-      - name: Build and push Docker image
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: . # Path to your Dockerfile and context
-          file: ./Dockerfile # Dockerfile path
-          platforms: ${{ matrix.platforms }} # The matrix defines the platforms (e.g., linux/amd64, linux/arm64)
-          push: true # Push the image to GHCR after building
-          outputs: type=image,name=ghcr.io/${{ github.repository }}/product-sentiment-analysis:v1,annotation-index.org.opencontainers.image.description=My multi-arch image
+      # Build and push the Docker image
+      - name: Build and Push Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/product-sentiment-analysis:v1 .
+          docker push ghcr.io/${{ github.repository }}/product-sentiment-analysis:v1
