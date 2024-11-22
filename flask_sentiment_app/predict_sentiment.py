@@ -24,14 +24,24 @@ def preprocess_text(text):
 
 # Predict sentiment
 def predict_sentiment(reviews):
-    if not reviews:
-        print("No reviews to analyze.")
-        return []
-
+    # Preprocess the reviews
     processed_reviews = [preprocess_text(review) for review in reviews]
     reviews_TFIDF = vectorizer.transform(processed_reviews)
-    predictions = NB_model.predict(reviews_TFIDF)
-    return predictions
+    numeric_predictions = NB_model.predict(reviews_TFIDF)
+
+    sentiment_labels = []
+    for pred in numeric_predictions:
+        # Convert prediction to float
+
+        if pred == 'positive':
+            sentiment_labels.append("Positive")
+        elif pred == 'negative':
+            sentiment_labels.append("Negative")
+        else:
+            sentiment_labels.append("Neutral")
+
+    return sentiment_labels
+
 
 # Generate AI-based summary
 def generate_ai_review(reviews, sentiments, overall_rating):
@@ -63,25 +73,28 @@ def generate_ai_review(reviews, sentiments, overall_rating):
 
 # Generate summary and evaluate AI-generated paragraph
 def generate_summary(reviews, sentiments):
-    sentiment_count = Counter(sentiments)
-    total_reviews = len(sentiments)
+    # Count sentiments
+    positive_count = sentiments.count('Positive')
+    neutral_count = sentiments.count('Neutral')
+    negative_count = sentiments.count('Negative')
 
-    # Sentiment counts
-    positive_count = sentiment_count.get('positive', 0)
-    neutral_count = sentiment_count.get('neutral', 0)
-    negative_count = sentiment_count.get('negative', 0)
-
-    # Overall sentiment
-    if positive_count > negative_count and positive_count > neutral_count:
+    # Determine overall sentiment
+    if positive_count > max(neutral_count, negative_count):
         overall_rating = "Positive"
-    elif negative_count > positive_count and negative_count > neutral_count:
+    elif neutral_count > max(positive_count, negative_count):
+        overall_rating = "Neutral"
+    elif negative_count > max(positive_count, neutral_count):
         overall_rating = "Negative"
     else:
         overall_rating = "Neutral"
 
-    # Call OpenAI API to generate AI-based review
+    # Generate AI-based review summary
     ai_review = generate_ai_review(reviews, sentiments, overall_rating)
 
+    # Re-evaluate AI-generated summary for sentiment
+
+
+    # Return results
     return ai_review, overall_rating
 
 # Example Usage

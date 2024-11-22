@@ -120,46 +120,18 @@ def generate_classification_report(sentiments):
     )
     return report
 
-
-import os
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
-
-STATIC_DATA_FOLDER = "static/data"
-
 def generate_graphs(sentiments):
     """
     Generate and save confusion matrix and class distribution plots.
-
-    :param sentiments: List of sentiment labels (e.g., ["positive", "negative"]).
-    :return: Paths to the confusion matrix plot and class distribution plot.
     """
-    # Map sentiment labels to integers
     sentiment_map = {'Negative': 0, 'Neutral': 1, 'Positive': 2}
-
-    # Normalize input sentiments to title case to match sentiment_map
-    normalized_sentiments = [s.capitalize() for s in sentiments]
-
-    # Check for unexpected sentiment values
-    if not all(s in sentiment_map for s in normalized_sentiments):
-        raise ValueError(f"Unexpected sentiment found in the input: {sentiments}")
-
-    # Convert sentiments to integers
-    sentiment_ints = [sentiment_map[s] for s in normalized_sentiments]
-
-    # Ensure there's data to plot
-    if not sentiment_ints:
-        raise ValueError("No sentiment data provided for graph generation.")
+    sentiment_ints = [sentiment_map[s] for s in sentiments]
 
     # Confusion Matrix
-    # For demo purposes, using predictions identical to true labels
     cm = confusion_matrix(sentiment_ints, sentiment_ints)
     cm_path = os.path.join(STATIC_DATA_FOLDER, 'cm_plot.png')
     plt.figure(figsize=(10, 7))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                xticklabels=["Negative", "Neutral", "Positive"],
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["Negative", "Neutral", "Positive"],
                 yticklabels=["Negative", "Neutral", "Positive"])
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted")
@@ -171,15 +143,13 @@ def generate_graphs(sentiments):
     class_counts = np.bincount(sentiment_ints, minlength=3)
     class_dist_path = os.path.join(STATIC_DATA_FOLDER, 'class_dist_plot.png')
     plt.figure(figsize=(8, 6))
-    sns.barplot(x=["Negative", "Neutral", "Positive"], y=class_counts, palette="muted")
+    sns.barplot(x=["Negative", "Neutral", "Positive"], y=class_counts)
     plt.title("Class Distribution")
     plt.ylabel("Frequency")
     plt.savefig(class_dist_path)
     plt.close()
 
     return cm_path, class_dist_path
-
-
 
 @app.route('/graph')
 def view_graph():
