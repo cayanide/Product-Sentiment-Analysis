@@ -4,7 +4,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Review Sentiment Analysis</title>
-        <!-- Link to External CSS -->
         <link
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
@@ -13,22 +12,40 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css"
         />
-        <link rel="preload" href="{{ cm_image }}" as="image" />
-        <link rel="preload" href="{{ class_dist_image }}" as="image" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     </head>
     <body>
+        <!-- Loading Overlay -->
+        <div id="loading-overlay">
+            <div class="spinner-box">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Scraping Data... Please Wait</p>
+            </div>
+        </div>
+
         <div class="container">
             <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <a class="navbar-brand" href="#">Review Sentiment Analysis</a>
-                <div class="collapse navbar-collapse">
+            <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+                <a class="navbar-brand" href="#">Review Analysis</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
-                        <!-- Centered Navbar -->
                         <li class="nav-item">
                             <a class="nav-link" href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/graph">View Graphs</a>
+                            <a class="nav-link" href="/graph">Graphs</a>
                         </li>
                     </ul>
                 </div>
@@ -36,9 +53,13 @@
 
             <!-- Main Content Section -->
             <div class="row justify-content-center mt-5">
-                <!-- Form and Analysis -->
                 <div class="col-md-8">
-                    <form action="/" method="POST" class="form-container">
+                    <form
+                        action="/"
+                        method="POST"
+                        class="form-container"
+                        onsubmit="showLoading()"
+                    >
                         <div class="form-group">
                             <label for="text_input">Product URL</label>
                             <input
@@ -46,32 +67,30 @@
                                 class="form-control"
                                 id="text_input"
                                 name="text_input"
+                                placeholder="Enter product URL"
                                 required
                             />
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary btn-block">
                             Analyze
                         </button>
                     </form>
 
-                    <!-- Analysis Results -->
                     {% if ai_review %}
                     <hr />
                     <div class="analysis-results">
                         <h3>Review Summary</h3>
                         <p>{{ ai_review }}</p>
 
-                        <!-- Overall Sentiment -->
                         <h4>
                             Overall Sentiment:
                             <span
-                                class="sentiment {{ overall_rating  | lower }}"
+                                class="sentiment {{ overall_rating | lower }}"
                             >
                                 {{ overall_rating or "Not Available" }}
                             </span>
                         </h4>
 
-                        <!-- Sentiment Breakdown -->
                         {% if sentiment_data %}
                         <h4>Sentiment Breakdown</h4>
                         <ul>
@@ -83,19 +102,13 @@
                             </li>
                             {% endfor %}
                         </ul>
-                        {% else %}
-                        <p>No sentiment data available.</p>
-                        {% endif %}
-
-                        <!-- Classification Report -->
-                        {% if class_report %}
+                        {% endif %} {% if class_report %}
                         <h4>Classification Report</h4>
                         <pre class="classification-report">
 {{ class_report }}</pre
                         >
                         {% endif %}
 
-                        <!-- Graphs -->
                         <h4>Graphs</h4>
                         <div class="graph-container">
                             {% if cm_image %}
@@ -115,56 +128,30 @@
                     </div>
                     {% endif %}
                 </div>
-
-                <!-- Product Details Section -->
-                <div class="col-md-4">
-                    <!-- Product Details -->
-                    {% if product_details %}
-                    <div class="product-details">
-                        <h4>Product Details</h4>
-                        <div class="product-info-box">
-                            <p>
-                                <strong>Product Name:</strong> {{
-                                product_details.name }}
-                            </p>
-                            <p>
-                                <strong>Category:</strong> {{
-                                product_details.category }}
-                            </p>
-                            <p>
-                                <strong>Brand:</strong> {{ product_details.brand
-                                }}
-                            </p>
-                            <p>
-                                <strong>Model:</strong> {{ product_details.model
-                                }}
-                            </p>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <!-- Session History -->
-                    {% if history %}
-                    <div class="session-history">
-                        <h4>Session History</h4>
-                        <ul>
-                            {% for url in history %}
-                            <li>
-                                <a href="{{ url }}" target="_blank"
-                                    >{{ url | truncate(50) }}</a
-                                >
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-                </div>
             </div>
         </div>
 
-        <!-- Bottom Links Section -->
+        <script>
+            // Show loading overlay when the form is submitted
+            // Show loading overlay when the form is submitted
+            function showLoading() {
+                document.getElementById("loading-overlay").style.display = "flex";
+            }
 
-        <!-- JavaScript Dependencies -->
+            // Hide the loading overlay once results are loaded (only when results exist)
+            $(document).ready(function () {
+                // Check if AI review content exists; if so, hide the spinner
+                const overlay = document.getElementById("loading-overlay");
+
+                        // Ensure spinner is hidden by default unless triggered
+                        {% if ai_review %}
+                            overlay.style.display = "none";
+                        {% else %}
+                            overlay.style.display = "none"; /* Prevent accidental display */
+                        {% endif %}
+                    });
+        </script>
+
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

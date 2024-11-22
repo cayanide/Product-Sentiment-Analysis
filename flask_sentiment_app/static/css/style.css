@@ -1,29 +1,37 @@
 /* Overall Page Styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Arial", sans-serif;
     background-color: #121212; /* Dark background */
     color: #e0e0e0; /* Light text */
     margin: 0;
     padding: 0;
 }
 
-/* Navbar Styling - Full Width and Centered Content */
+/* Navbar Styling */
 .navbar {
     background-color: #0a3d2d; /* Dark green background */
-    width: 100%; /* Ensure navbar stretches across the full width */
-    padding: 10px 0;
+    width: 100%;
+    padding: 15px 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    display: flex; /* Use flexbox for proper alignment */
-    align-items: center; /* Center items vertically */
-    justify-content: space-between; /* Ensure content spans entire width */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 1000; /* Keep navbar on top of other content */
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background-color: #084a36; /* Slightly darker on scroll */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .navbar .navbar-brand {
     color: #e0e0e0;
-    margin-left: 20px; /* Add some spacing on the left */
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: 24px;
 }
 
 .navbar .navbar-nav {
@@ -31,79 +39,44 @@ body {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    margin-right: 20px; /* Add some spacing on the right */
+    margin-right: 20px;
     width: 100%;
-    justify-content: center; /* Center navbar items */
+    justify-content: center;
 }
 
 .navbar-nav li {
-    margin: 0 10px;
+    margin: 0 15px;
 }
 
 .navbar a {
-    color: #e0e0e0; /* Light text */
+    color: #e0e0e0;
     text-decoration: none;
-    margin: 0 10px;
     font-size: 18px;
     transition: all 0.3s ease;
 }
 
 .navbar a:hover {
-    color: #d0ffb8; /* Light green on hover */
-    text-decoration: underline;
-}
-
-/* Bottom Links - Full Width Like Navbar */
-.bottom-links {
-    background-color: #0a3d2d; /* Match navbar color */
-    width: 100%; /* Stretch across full page width */
-    padding: 10px 0;
-    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
-    position: fixed;
-    bottom: 0;
-    z-index: 1000; /* Keep above other content */
-    display: flex;
-    justify-content: center; /* Center content */
-    align-items: center; /* Vertically center items */
-}
-
-.bottom-links ul {
-    list-style-type: none;
-    padding-left: 0;
-    display: flex;
-    justify-content: center; /* Center the links */
-    margin: 0;
-}
-
-.bottom-links ul li {
-    margin: 0 10px;
-}
-
-.bottom-links a {
-    color: #e0e0e0; /* Light text */
-    text-decoration: none;
-    font-size: 18px;
-    transition: all 0.3s ease;
-}
-
-.bottom-links a:hover {
-    color: #d0ffb8; /* Light green on hover */
+    color: #d0ffb8;
     text-decoration: underline;
 }
 
 /* Form Container Styling */
 .form-container {
-    background-color: #1c1c1c; /* Dark background for the form */
+    background-color: #1c1c1c;
     padding: 40px;
-    border-radius: 8px;
+    border-radius: 12px; /* Smoothed edges */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     width: 80%;
     max-width: 500px;
     margin: 50px auto;
-    text-align: center; /* Center the text inside the form */
+    text-align: center;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Centered input box and button */
+.form-container:hover {
+    transform: scale(1.02); /* Slight zoom effect */
+}
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -112,16 +85,16 @@ body {
     padding: 15px;
     border-radius: 8px;
     border: 1px solid #333;
-    background-color: #333; /* Dark input background */
-    color: #e0e0e0; /* Light text in input */
+    background-color: #333;
+    color: #e0e0e0;
     width: 100%;
     font-size: 16px;
     transition: all 0.3s ease-in-out;
 }
 
 .form-control:focus {
-    border-color: #0a3d2d; /* Green on focus */
-    background-color: #444; /* Slightly lighter */
+    border-color: #0a3d2d;
+    background-color: #444;
 }
 
 /* Submit Button Styling */
@@ -141,47 +114,107 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Center Page Content */
-.container {
+/* Loading Overlay Styling */
+#loading-overlay {
+    display: none; /* Always hidden initially */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    color: #fff;
+}
+
+.spinner-box {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-top: 50px;
-    padding: 20px;
 }
 
-/* Analysis Results Styling */
-.analysis-results {
-    background-color: #1c1c1c;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    margin-top: 30px;
-    text-align: left;
-    width: 80%;
-    max-width: 600px;
+.spinner-box i {
+    font-size: 40px;
+    animation: spin 1s infinite linear;
+}
+
+.spinner-box p {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Sentiment Colors */
 .sentiment.positive {
-    color: #00b8d4; /* Cyan for positive sentiment */
+    color: #00b8d4;
     font-weight: bold;
+    text-shadow: 0 0 10px #00b8d4;
 }
 
 .sentiment.neutral {
-    color: #ffeb3b; /* Yellow for neutral sentiment */
+    color: #ffeb3b;
     font-weight: bold;
+    text-shadow: 0 0 10px #ffeb3b;
 }
 
 .sentiment.negative {
-    color: #f44336; /* Red for negative sentiment */
+    color: #f44336;
     font-weight: bold;
+    text-shadow: 0 0 10px #f44336;
 }
 
-/* Responsive Adjustments */
+/* Table Styling */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: #1c1c1c;
+    border-radius: 10px;
+}
+
+table th,
+table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+table th {
+    background-color: #333;
+    color: #d0ffb8;
+}
+
+table tr:hover {
+    background-color: #444;
+}
+
+/* Graph Image Styling */
+.graph-image {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth scroll for navbar */
 @media (max-width: 768px) {
-    .navbar-nav,
+    .navbar-nav {
+        flex-direction: column;
+    }
+
     .bottom-links ul {
         flex-direction: column;
     }
