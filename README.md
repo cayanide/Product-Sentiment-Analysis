@@ -1,5 +1,7 @@
 Product Sentiment Analysis
+
 This project provides a sentiment analysis tool for product reviews using machine learning (Naive Bayes classifier). It allows users to predict the sentiment of a given product review (positive, negative, or neutral). This web application is built using Flask, Python, and a Naive Bayes model to classify product sentiments.
+
 Username: cayanide
  
 Table of Contents
@@ -26,13 +28,19 @@ Clone the repository to your local machine:
 git clone https://github.com/cayanide/Product-Sentiment-Analysis.git
 cd Product-Sentiment-Analysis
 2. Create a Virtual Environment
+
 Create a virtual environment to manage the dependencies:
 
 
 python3 -m venv venv
+
 source venv/bin/activate  # For Linux/Mac
+
 venv\Scripts\activate     # For Windows
+
+
 3. Install Dependencies
+
 Install all the necessary Python dependencies:
 
 
@@ -44,7 +52,11 @@ To run the app locally, you can use the following command:
 
 
 python app.py
+
+
 This will start the Flask application, and you can access it via your browser at http://127.0.0.1:5000/.
+
+
 2. Web Interface
 Once the app is running, open your browser and go to http://127.0.0.1:5000/. Here you can input a product review, and the app will predict the sentiment (positive, negative, or neutral).
  
@@ -99,4 +111,4 @@ Acknowledgements
  
 This README provides an overview of how to set up and use your sentiment analysis application. If you have any other questions or need further assistance, feel free to open an issue or contribute to the repository.
 
-![image](https://github.com/user-attachments/assets/1bd4dfb1-dca3-4c4a-ba03-07e99dd00a0f)
+
