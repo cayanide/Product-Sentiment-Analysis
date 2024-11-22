@@ -3,193 +3,170 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Product Sentiment Analysis</title>
+        <title>Review Sentiment Analysis</title>
+        <!-- Link to External CSS -->
         <link
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
-        <script>
-            // Show the loading spinner during form submission
-            function showLoading() {
-                document.getElementById("loading").style.display = "flex";
-                document.getElementById("results").style.display = "none";
-            }
-
-            // Hide the loading spinner on initial page load
-            window.onload = function () {
-                document.getElementById("loading").style.display = "none";
-            };
-
-            // Toggle visibility of the reviews table
-            function toggleReviewsTable() {
-                const tableSection = document.getElementById("reviews-table");
-                const toggleButton =
-                    document.getElementById("toggle-table-btn");
-                if (
-                    tableSection.style.display === "none" ||
-                    !tableSection.style.display
-                ) {
-                    tableSection.style.display = "block";
-                    toggleButton.textContent = "Collapse Reviews";
-                } else {
-                    tableSection.style.display = "none";
-                    toggleButton.textContent = "View All Reviews";
-                }
-            }
-        </script>
-        <style>
-            /* Loading animation styles */
-            #loading {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(255, 255, 255, 0.8);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                font-size: 20px;
-                text-align: center;
-                z-index: 1000;
-            }
-
-            /* Spinner styles */
-            .spinner {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 80px;
-                height: 80px;
-                border: 8px solid #f3f3f3;
-                border-top: 8px solid #3498db;
-                border-radius: 50%;
-                animation: spin 1.5s linear infinite;
-            }
-
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
-
-            /* Results Section */
-            .results {
-                margin-top: 30px;
-            }
-
-            .results table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            .results th,
-            .results td {
-                padding: 10px;
-                text-align: left;
-                border: 1px solid #ddd;
-            }
-
-            .results th {
-                background-color: #f2f2f2;
-            }
-
-            /* Overall Review Section */
-            .overall-review {
-                margin-top: 20px;
-                padding: 15px;
-                background-color: #f9f9f9;
-                border-radius: 5px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            }
-
-            /* Review Table Section */
-            #reviews-table {
-                margin-top: 20px;
-                display: none; /* Initially hidden */
-                background-color: #fdfdfd;
-                border: 1px solid #ddd;
-                padding: 15px;
-                border-radius: 5px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            }
-
-            #toggle-table-btn {
-                margin-top: 10px;
-                padding: 10px 20px;
-                font-size: 16px;
-                background-color: #3498db;
-                color: #fff;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-
-            #toggle-table-btn:hover {
-                background-color: #2980b9;
-            }
-        </style>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <link rel="preload" href="{{ cm_image }}" as="image" />
+        <link rel="preload" href="{{ class_dist_image }}" as="image" />
     </head>
     <body>
         <div class="container">
-            <h1>Product Sentiment Analysis</h1>
-            <!-- Form to submit the product URL -->
-            <form action="/" method="post" onsubmit="showLoading()">
-                <input
-                    type="text"
-                    name="product_url"
-                    placeholder="Enter Product URL"
-                    required
-                />
-                <button type="submit">Analyze Sentiment</button>
-            </form>
-
-            <!-- Loading animation -->
-            <div id="loading">
-                <div class="spinner"></div>
-                <p>Fetching reviews and analyzing sentiment... Please wait!</p>
-            </div>
-
-            <!-- Results Section -->
-            <div id="results">
-                {% if ai_review %}
-                <div class="overall-review">
-                    <h2>Overall Review</h2>
-                    <p>{{ ai_review }}</p>
-                    <h3>Overall Sentiment: {{ overall_rating }}</h3>
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="navbar-brand" href="#">Review Sentiment Analysis</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav mx-auto">
+                        <!-- Centered Navbar -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/graph">View Graphs</a>
+                        </li>
+                    </ul>
                 </div>
-                {% endif %} {% if sentiment_data %}
-                <!-- Button to toggle the reviews table -->
-                <button id="toggle-table-btn" onclick="toggleReviewsTable()">
-                    View All Reviews
-                </button>
+            </nav>
 
-                <!-- Reviews Table Section -->
-                <div id="reviews-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Review</th>
-                                <th>Sentiment</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <!-- Main Content Section -->
+            <div class="row justify-content-center mt-5">
+                <!-- Form and Analysis -->
+                <div class="col-md-8">
+                    <form action="/" method="POST" class="form-container">
+                        <div class="form-group">
+                            <label for="text_input">Product URL</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="text_input"
+                                name="text_input"
+                                required
+                            />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Analyze
+                        </button>
+                    </form>
+
+                    <!-- Analysis Results -->
+                    {% if ai_review %}
+                    <hr />
+                    <div class="analysis-results">
+                        <h3>Review Summary</h3>
+                        <p>{{ ai_review }}</p>
+
+                        <!-- Overall Sentiment -->
+                        <h4>
+                            Overall Sentiment:
+                            <span
+                                class="sentiment {{ overall_rating  | lower }}"
+                            >
+                                {{ overall_rating or "Not Available" }}
+                            </span>
+                        </h4>
+
+                        <!-- Sentiment Breakdown -->
+                        {% if sentiment_data %}
+                        <h4>Sentiment Breakdown</h4>
+                        <ul>
                             {% for review, sentiment in sentiment_data %}
-                            <tr>
-                                <td>{{ review }}</td>
-                                <td>{{ sentiment }}</td>
-                            </tr>
+                            <li>
+                                <span class="sentiment {{ sentiment | lower }}">
+                                    {{ sentiment }} </span
+                                >: {{ review }}
+                            </li>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        </ul>
+                        {% else %}
+                        <p>No sentiment data available.</p>
+                        {% endif %}
+
+                        <!-- Classification Report -->
+                        {% if class_report %}
+                        <h4>Classification Report</h4>
+                        <pre class="classification-report">
+{{ class_report }}</pre
+                        >
+                        {% endif %}
+
+                        <!-- Graphs -->
+                        <h4>Graphs</h4>
+                        <div class="graph-container">
+                            {% if cm_image %}
+                            <img
+                                src="{{ cm_image }}"
+                                alt="Confusion Matrix"
+                                class="graph-image"
+                            />
+                            {% endif %} {% if class_dist_image %}
+                            <img
+                                src="{{ class_dist_image }}"
+                                alt="Class Distribution"
+                                class="graph-image"
+                            />
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
+
+                <!-- Product Details Section -->
+                <div class="col-md-4">
+                    <!-- Product Details -->
+                    {% if product_details %}
+                    <div class="product-details">
+                        <h4>Product Details</h4>
+                        <div class="product-info-box">
+                            <p>
+                                <strong>Product Name:</strong> {{
+                                product_details.name }}
+                            </p>
+                            <p>
+                                <strong>Category:</strong> {{
+                                product_details.category }}
+                            </p>
+                            <p>
+                                <strong>Brand:</strong> {{ product_details.brand
+                                }}
+                            </p>
+                            <p>
+                                <strong>Model:</strong> {{ product_details.model
+                                }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Session History -->
+                    {% if history %}
+                    <div class="session-history">
+                        <h4>Session History</h4>
+                        <ul>
+                            {% for url in history %}
+                            <li>
+                                <a href="{{ url }}" target="_blank"
+                                    >{{ url | truncate(50) }}</a
+                                >
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
+
+        <!-- Bottom Links Section -->
+
+        <!-- JavaScript Dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
 </html>

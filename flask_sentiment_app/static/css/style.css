@@ -1,64 +1,192 @@
+/* Overall Page Styling */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text */
     margin: 0;
     padding: 0;
 }
 
-.container {
+/* Navbar Styling - Full Width and Centered Content */
+.navbar {
+    background-color: #0a3d2d; /* Dark green background */
+    width: 100%; /* Ensure navbar stretches across the full width */
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: flex; /* Use flexbox for proper alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Ensure content spans entire width */
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Keep navbar on top of other content */
+}
+
+.navbar .navbar-brand {
+    color: #e0e0e0;
+    margin-left: 20px; /* Add some spacing on the left */
+}
+
+.navbar .navbar-nav {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-right: 20px; /* Add some spacing on the right */
+    width: 100%;
+    justify-content: center; /* Center navbar items */
+}
+
+.navbar-nav li {
+    margin: 0 10px;
+}
+
+.navbar a {
+    color: #e0e0e0; /* Light text */
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #d0ffb8; /* Light green on hover */
+    text-decoration: underline;
+}
+
+/* Bottom Links - Full Width Like Navbar */
+.bottom-links {
+    background-color: #0a3d2d; /* Match navbar color */
+    width: 100%; /* Stretch across full page width */
+    padding: 10px 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    bottom: 0;
+    z-index: 1000; /* Keep above other content */
+    display: flex;
+    justify-content: center; /* Center content */
+    align-items: center; /* Vertically center items */
+}
+
+.bottom-links ul {
+    list-style-type: none;
+    padding-left: 0;
+    display: flex;
+    justify-content: center; /* Center the links */
+    margin: 0;
+}
+
+.bottom-links ul li {
+    margin: 0 10px;
+}
+
+.bottom-links a {
+    color: #e0e0e0; /* Light text */
+    text-decoration: none;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.bottom-links a:hover {
+    color: #d0ffb8; /* Light green on hover */
+    text-decoration: underline;
+}
+
+/* Form Container Styling */
+.form-container {
+    background-color: #1c1c1c; /* Dark background for the form */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     width: 80%;
-    margin: 0 auto;
-    padding-top: 50px;
+    max-width: 500px;
+    margin: 50px auto;
+    text-align: center; /* Center the text inside the form */
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-form {
-    text-align: center;
+/* Centered input box and button */
+.form-group {
     margin-bottom: 20px;
 }
 
-input[type="text"] {
-    padding: 10px;
-    width: 70%;
-    margin-right: 10px;
+.form-control {
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #333; /* Dark input background */
+    color: #e0e0e0; /* Light text in input */
+    width: 100%;
     font-size: 16px;
+    transition: all 0.3s ease-in-out;
 }
 
-button {
-    padding: 10px 20px;
+.form-control:focus {
+    border-color: #0a3d2d; /* Green on focus */
+    background-color: #444; /* Slightly lighter */
+}
+
+/* Submit Button Styling */
+.btn-primary {
+    background-color: #0a3d2d;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 5px;
+    color: white;
     font-size: 16px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
 }
 
-.results {
-    margin-top: 30px;
-    background-color: #fff;
+.btn-primary:hover {
+    background-color: #45a049;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Center Page Content */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
     padding: 20px;
-    border-radius: 5px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table th,
-table td {
-    padding: 10px;
+/* Analysis Results Styling */
+.analysis-results {
+    background-color: #1c1c1c;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 30px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    width: 80%;
+    max-width: 600px;
 }
 
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+/* Sentiment Colors */
+.sentiment.positive {
+    color: #00b8d4; /* Cyan for positive sentiment */
+    font-weight: bold;
 }
 
-h3 {
-    text-align: center;
-    font-size: 20px;
-    color: #2d2d2d;
+.sentiment.neutral {
+    color: #ffeb3b; /* Yellow for neutral sentiment */
+    font-weight: bold;
+}
+
+.sentiment.negative {
+    color: #f44336; /* Red for negative sentiment */
+    font-weight: bold;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-nav,
+    .bottom-links ul {
+        flex-direction: column;
+    }
+
+    .bottom-links ul li {
+        margin: 5px 0;
+    }
 }

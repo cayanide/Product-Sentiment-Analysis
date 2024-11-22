@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Graphs and Class Report</title>
+        <!-- External CSS -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
+        <link rel="preload" href="{{ cm_image }}" as="image" />
+        <link rel="preload" href="{{ class_dist_image }}" as="image" />
+    </head>
+    <body>
+        <!-- Navbar -->
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/graph">View Graph</a>
+        </div>
+
+        <div class="container mt-5">
+            <!-- Graphs and Reports Section -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="graph-item">
+                        <h3>Confusion Matrix</h3>
+                        <img
+                            src="{{ cm_image }}"
+                            alt="Confusion Matrix"
+                            class="graph-image"
+                        />
+                    </div>
+                    <div class="graph-item">
+                        <h3>Class Distribution</h3>
+                        <img
+                            src="{{ class_dist_image }}"
+                            alt="Class Distribution"
+                            class="graph-image"
+                        />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="report-container">
+                        <h2>Classification Report</h2>
+                        <pre class="classification-report-box">
+{{ class_report }}</pre
+                        >
+                    </div>
+
+                    <a href="/" class="back-button">Back to Home</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript for Dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>
