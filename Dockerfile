@@ -27,7 +27,7 @@ RUN pip install -r requirements.txt
 
 # Copy the datasets into the container
 COPY flask_sentiment_app/Data /app/Data
-
+COPY .env /app/.env
 # Run the train_model.py to train the model and save it as a .pkl file
 RUN python flask_sentiment_app/train_model.py
 
