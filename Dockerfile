@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-# Install system dependencies for building h5py
+# Install system dependencies for building h5py and nltk requirements
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libhdf5-dev \
@@ -10,14 +10,30 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy application code
+# Copy application code and datasets into the container
 COPY . /app
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port for Flask app
-EXPOSE 5000
+# Install NLTK separately to ensure it is available for downloading resources
+RUN pip install nltk
 
-# Command to run the app
+# Ensure NLTK resources are downloaded during build
+RUN python -m nltk.downloader punkt stopwords wordnet punkt_tab
+
+# Copy the datasets into the container
+COPY flask_sentiment_app/Data /app/Data
+
+# Run the train_model.py to train the model and save it as a .pkl file
+RUN python flask_sentiment_app/train_model.py
+
+# Expose port for Flask app
+EXPOSE 3636
+
+# Ensure Flask binds to 0.0.0.0
+ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_RUN_PORT=3636
+
+# Command to run the Flask app after training
 CMD ["python", "flask_sentiment_app/app.py"]
