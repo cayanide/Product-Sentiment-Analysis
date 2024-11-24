@@ -13,14 +13,17 @@ WORKDIR /app
 # Copy application code and datasets into the container
 COPY . /app
 
+RUN pip install nltk
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+
 
 # Install NLTK separately to ensure it is available for downloading resources
-RUN pip install nltk
+
 
 # Ensure NLTK resources are downloaded during build
 RUN python -m nltk.downloader punkt stopwords wordnet punkt_tab
+
+RUN pip install -r requirements.txt
 
 # Copy the datasets into the container
 COPY flask_sentiment_app/Data /app/Data

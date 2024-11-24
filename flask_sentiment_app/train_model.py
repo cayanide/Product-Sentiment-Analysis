@@ -7,7 +7,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 import joblib
 from sklearn.model_selection import train_test_split
 
@@ -16,6 +16,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('punkt_tab')
+
 # ---------------- LOAD DATA ------------------
 # Paths to datasets
 datasets = [
@@ -73,7 +74,7 @@ data = data.dropna(subset=['sentiment'])
 data['processed_text'] = data['text'].apply(preprocess_text)
 
 # ---------------- VECTORIZE TEXT ------------------
-vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
+vectorizer = TfidfVectorizer(max_features=2000, ngram_range=(1, 1))  # Adjusted max_features and ngram_range
 X = vectorizer.fit_transform(data['processed_text'])
 y = data['sentiment']
 
@@ -81,7 +82,7 @@ y = data['sentiment']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # ---------------- TRAIN NAIVE BAYES MODEL ------------------
-NB_model = MultinomialNB()
+NB_model = MultinomialNB(alpha=1.0)  # Adjusted alpha for smoothing
 NB_model.fit(X_train, y_train)
 
 # ---------------- SAVE THE MODEL AND VECTORIZER ------------------
@@ -90,5 +91,11 @@ joblib.dump(vectorizer, 'vectorizer.pkl')
 
 # ---------------- TEST THE MODEL ------------------
 predictions = NB_model.predict(X_test)
+
+# Model evaluation
 print(f"Accuracy: {accuracy_score(y_test, predictions)}")
 print(classification_report(y_test, predictions))
+
+# Confusion matrix to understand misclassifications
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, predictions))

@@ -24,21 +24,17 @@ def preprocess_text(text):
 
 # Predict sentiment
 def predict_sentiment(reviews):
-    # Preprocess the reviews
     processed_reviews = [preprocess_text(review) for review in reviews]
     reviews_TFIDF = vectorizer.transform(processed_reviews)
     numeric_predictions = NB_model.predict(reviews_TFIDF)
 
     sentiment_labels = []
     for pred in numeric_predictions:
-        # Convert prediction to float
-
-        if pred == 'positive':
+        # Map numeric prediction (0 or 1) to "Negative" or "Positive"
+        if pred == 1:
             sentiment_labels.append("Positive")
-        elif pred == 'negative':
+        elif pred == 0:
             sentiment_labels.append("Negative")
-        else:
-            sentiment_labels.append("Neutral")
 
     return sentiment_labels
 
