@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import time
 import random
 import logging
-
+import random
 # Set up logging for better debugging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -16,10 +16,19 @@ def scrape_amazon_reviews(product_url):
 
     Returns:
     list: List of reviews as text strings.
+
     """
+
+    user_agents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        # Add more user-agent strings as needed
+    ]
+
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
+        'User-Agent': random.choice(user_agents) }
     try:
         response = requests.get(product_url, headers=headers)
         response.raise_for_status()  # Will raise an HTTPError if the response was not successful

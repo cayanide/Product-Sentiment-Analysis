@@ -3,3 +3,4 @@ training.1600000.processed.noemoticon.csv
 flask_sentiment_app/product-sentiment-analysis-v1.tar
 
 Data/product-sentiment-analysis_v2.tgz
+*.tgz
