@@ -13,6 +13,8 @@ WORKDIR /app
 # Copy application code and datasets into the container
 COPY . /app
 
+RUN pip install --upgrade pip
+
 RUN pip install nltk
 # Install Python dependencies
 

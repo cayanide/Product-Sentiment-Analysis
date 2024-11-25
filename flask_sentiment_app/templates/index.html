@@ -133,6 +133,38 @@
             </div>
         </div>
 
+        <div class="saved-links-section mt-5">
+            <h5 class="text-center">Previously Analyzed Products</h5>
+            <div class="accordion" id="savedLinksAccordion">
+                {% if history %} {% for url in history %}
+                <div class="card">
+                    <div class="card-header" id="heading-{{ loop.index }}">
+                        <h2 class="mb-0">
+                            <button
+                                class="btn btn-link btn-block text-left collapsed"
+                                type="button"
+                                onclick="pasteToInput('{{ url }}')"
+                                aria-expanded="false"
+                            >
+                                <i class="fas fa-link"></i>
+                                {{ url | truncate(30, True) }}
+                            </button>
+                        </h2>
+                    </div>
+                </div>
+                {% endfor %} {% else %}
+                <p class="text-center text-muted">No saved links available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <script>
+            // Function to paste a URL into the input field
+            function pasteToInput(url) {
+                document.getElementById("text_input").value = url;
+            }
+        </script>
+
         <script>
             // Show loading overlay when the form is submitted
             // Show loading overlay when the form is submitted
@@ -152,6 +184,29 @@
                             overlay.style.display = "none"; /* Prevent accidental display */
                         {% endif %}
                     });
+                    function analyzeSavedLink(url) {
+                        // Show loading spinner
+                        document.getElementById("loading-overlay").style.display = "flex";
+
+                        // Submit the URL dynamically via AJAX
+                        $.ajax({
+                            url: "/",
+                            type: "POST",
+                            data: { text_input: url },
+                            success: function (response) {
+                                // Load the response (assumes the backend sends HTML for the results)
+                                $("body").html(response);
+
+                                // Hide the spinner
+                                document.getElementById("loading-overlay").style.display = "none";
+                            },
+                            error: function () {
+                                // Hide the spinner and show an error message
+                                document.getElementById("loading-overlay").style.display = "none";
+                                alert("An error occurred while processing the link.");
+                            },
+                        });
+                    }
         </script>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
