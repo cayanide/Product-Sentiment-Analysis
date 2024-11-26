@@ -1,3 +1,5 @@
+import os
+import requests
 import pandas as pd
 import numpy as np
 import nltk
@@ -15,7 +17,31 @@ from sklearn.model_selection import train_test_split
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
-nltk.download('punkt_tab')
+
+# ---------------- DOWNLOAD LARGE DATASET ------------------
+def download_dataset(url, save_path):
+    """Download the dataset if it doesn't already exist."""
+    if not os.path.exists(save_path):
+        print(f"Downloading dataset from {url}...")
+        response = requests.get(url, stream=True)
+        with open(save_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    file.write(chunk)
+        print(f"Dataset downloaded and saved to {save_path}.")
+    else:
+        print(f"Dataset already exists at {save_path}.")
+
+# URL for the large dataset
+large_dataset_url = "https://www.dropbox.com/scl/fi/ks5lrffze35bv83vx1kh4/training.1600000.processed.noemoticon.csv?rlkey=do7lel2livvpjv973nr6cns1o&st=5dy9og2d&dl=0"
+large_dataset_path = 'Data/training.1600000.processed.noemoticon.csv'
+
+# Ensure the Data directory exists
+if not os.path.exists('Data'):
+    os.makedirs('Data')
+
+# Download the dataset if needed
+download_dataset(large_dataset_url, large_dataset_path)
 
 # ---------------- LOAD DATA ------------------
 # Paths to datasets
@@ -23,7 +49,7 @@ datasets = [
     'Data/amazon_cells_labelled.csv',
     'Data/imdb_labelled.txt',
     'Data/yelp_labelled.txt',
-    'Data/training.1600000.processed.noemoticon.csv'
+    large_dataset_path  # Path to the large dataset
 ]
 
 # Column names for the datasets
