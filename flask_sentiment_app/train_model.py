@@ -62,7 +62,18 @@ sentiment140_columns = ['sentiment', 'id', 'date', 'query', 'user', 'text']
 amazon_data = pd.read_csv(datasets[0], names=amazon_columns)
 imdb_data = pd.read_csv(datasets[1], names=imdb_columns, sep='\t')
 yelp_data = pd.read_csv(datasets[2], names=yelp_columns, sep='\t')
-sentiment140_data = pd.read_csv(datasets[3], encoding='ISO-8859-1', names=sentiment140_columns)
+
+# Load Sentiment140 dataset
+try:
+    sentiment140_data = pd.read_csv(
+        datasets[3],
+        encoding='ISO-8859-1',
+        names=sentiment140_columns,
+        on_bad_lines='skip'  # Skip rows with issues
+    )
+except Exception as e:
+    print(f"Error loading dataset: {e}")
+    exit(1)
 
 # Convert sentiment in Sentiment140 dataset (0: Negative, 4: Positive)
 sentiment140_data['sentiment'] = sentiment140_data['sentiment'].map({0: 0, 4: 1})
