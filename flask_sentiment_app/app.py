@@ -105,8 +105,8 @@ def index():
                 ai_review=ai_review,
                 overall_rating=overall_rating,
                 sentiment_data=sentiment_data,
-                cm_image=os.path.join('flask_sentiment_app','static', 'Data', cm_image),
-                class_dist_image=os.path.join('flask_sentiment_app','static', 'Data', class_dist_image),
+                cm_image=os.path.join('cm_image''static', 'Data', cm_image),
+                class_dist_image=os.path.join('static', 'Data', class_dist_image),
                 class_report=class_report,
                 history=history,
                 product_details=product_details
@@ -192,11 +192,17 @@ def view_graph():
     cm_image = os.path.join('static', 'Data', 'cm_plot.png')
     class_dist_image = os.path.join('static', 'Data', 'class_dist_plot.png')
 
-    # Load the classification report from the cookie or handle it consistently
+    # Load the analysis reports from cookies
     analysis_reports = get_cookie_data(request, "analysis_reports", {})
-    class_report = analysis_reports.get("latest_class_report", "No report available.")
 
-    # Add the current time to the context to avoid caching
+    # Ensure the classification report is retrieved correctly
+    # Optionally, you could use a default product or extract the latest report
+    if analysis_reports:
+        class_report = list(analysis_reports.values())[-1].get('class_report', "No report available.")
+    else:
+        class_report = "No report available."
+
+    # Add the current time to avoid caching
     current_time = int(time())  # Current timestamp for cache busting
 
     return render_template(
