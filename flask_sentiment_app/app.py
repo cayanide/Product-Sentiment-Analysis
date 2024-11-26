@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, session, make_response, redir
 from scrape_reviews import scrape_reviews  # Import your scraping logic
 from predict_sentiment import predict_sentiment, generate_summary  # Import your sentiment analysis logic
 from sklearn.metrics import confusion_matrix, classification_report
+from time import time
 
 # Set up the non-GUI backend for saving plots in Flask environment
 matplotlib.use('Agg')
@@ -16,7 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Secure session key
 
 # Folder for saving static images (graphs)
-STATIC_DATA_FOLDER = os.path.join(os.getcwd(), 'static', 'Data')
+STATIC_DATA_FOLDER = os.path.join(os.getcwd(),'flask_sentiment_app', 'static', 'Data')
 if not os.path.exists(STATIC_DATA_FOLDER):
     os.makedirs(STATIC_DATA_FOLDER)
 
@@ -42,14 +43,6 @@ def index():
     # Load user history and previous analysis from cookies
     history = get_cookie_data(request, "history", [])
     analysis_reports = get_cookie_data(request, "analysis_reports", {})
-
-    if request.is_json:
-            data = request.get_json()
-            product_url = data.get("text_input")
-            # Logic to analyze the product and return results as JSON
-            # Your analysis logic here...
-            response = render_template('index.html', ai_review=ai_review)
-            return response
 
     if request.method == 'POST':
         product_url = request.form['text_input']
@@ -112,13 +105,14 @@ def index():
                 ai_review=ai_review,
                 overall_rating=overall_rating,
                 sentiment_data=sentiment_data,
-                cm_image=cm_image,
-                class_dist_image=class_dist_image,
+                cm_image=os.path.join('flask_sentiment_app','static', 'Data', cm_image),
+                class_dist_image=os.path.join('flask_sentiment_app','static', 'Data', class_dist_image),
                 class_report=class_report,
                 history=history,
                 product_details=product_details
             )
         )
+
         save_cookie_data(response, "history", history)
         save_cookie_data(response, "analysis_reports", analysis_reports)
         return response
@@ -167,9 +161,11 @@ def generate_graphs(sentiments):
 
     # Confusion Matrix
     cm = confusion_matrix(sentiment_ints, sentiment_ints)
-    cm_path = os.path.join(STATIC_DATA_FOLDER, 'cm_plot.png')
+    cm_filename = 'cm_plot.png'
+    cm_path = os.path.join(STATIC_DATA_FOLDER, cm_filename)
     plt.figure(figsize=(10, 7))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["Negative", "Neutral", "Positive"],
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=["Negative", "Neutral", "Positive"],
                 yticklabels=["Negative", "Neutral", "Positive"])
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted")
@@ -179,7 +175,8 @@ def generate_graphs(sentiments):
 
     # Class Distribution
     class_counts = np.bincount(sentiment_ints, minlength=3)
-    class_dist_path = os.path.join(STATIC_DATA_FOLDER, 'class_dist_plot.png')
+    class_dist_filename = 'class_dist_plot.png'
+    class_dist_path = os.path.join(STATIC_DATA_FOLDER, class_dist_filename)
     plt.figure(figsize=(8, 6))
     sns.barplot(x=["Negative", "Neutral", "Positive"], y=class_counts)
     plt.title("Class Distribution")
@@ -187,7 +184,7 @@ def generate_graphs(sentiments):
     plt.savefig(class_dist_path)
     plt.close()
 
-    return cm_path, class_dist_path
+    return cm_filename, class_dist_filename
 
 @app.route('/graph')
 def view_graph():
@@ -195,15 +192,21 @@ def view_graph():
     cm_image = os.path.join('static', 'Data', 'cm_plot.png')
     class_dist_image = os.path.join('static', 'Data', 'class_dist_plot.png')
 
-    # Load classification report from session
-    class_report = session.get('class_report', None)
+    # Load the classification report from the cookie or handle it consistently
+    analysis_reports = get_cookie_data(request, "analysis_reports", {})
+    class_report = analysis_reports.get("latest_class_report", "No report available.")
+
+    # Add the current time to the context to avoid caching
+    current_time = int(time())  # Current timestamp for cache busting
 
     return render_template(
         'graph.html',
         cm_image=cm_image,
         class_dist_image=class_dist_image,
-        class_report=class_report
+        class_report=class_report,
+        current_time=current_time  # Pass timestamp to template
     )
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=3030)
